@@ -15,7 +15,6 @@ use yii\di\Instance;
 
 use TeamTNT\TNTSearch\TNTSearch as Searcher;
 
-
 /**
  * Class TNTSearch
  *
@@ -97,14 +96,13 @@ class TNTSearch extends Component
         return $searcher;
     }
 
-
     /**
      * @param Connection|null $db
      * @return Searcher
      */
     public function createSearcher(?Connection $db = null): Searcher
     {
-        $db = $db ?? Yii::$app->getDb()->getMasterPdo();
+        $db = $db ?? Yii::$app->getDb();
         $searcher = new Searcher();
         $searcher->loadConfig(['storage' => $this->indexPath]);
         $searcher->setDatabaseHandle($db->getMasterPdo());
@@ -116,6 +114,5 @@ class TNTSearch extends Component
 
         return $searcher;
     }
-
-
+    
 }

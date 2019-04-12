@@ -1,0 +1,34 @@
+{
+    "name": "vxm/yii2-tntsearch",
+    "description": "Simple full-text search for Yii2 active record",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","full-text-search"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Vuong Minh",
+            "email": "vuongxuongminh@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "yiisoft/yii2": ">=2.0.13",
+        "teamtnt/tntsearch": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "vxm\\tntsearch\\": "src"
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}

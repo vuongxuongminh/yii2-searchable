@@ -11,14 +11,13 @@ use Yii;
 
 use yii\base\Component;
 use yii\db\Connection;
+use yii\di\Instance;
 
 use TeamTNT\TNTSearch\TNTSearch as Searcher;
-use yii\di\Instance;
+
 
 /**
  * Class TNTSearch
- *
- * @property Searcher $searcher
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
@@ -66,7 +65,7 @@ class TNTSearch extends Component
      */
     public function search(string $query, string $index, int $limit = 1000, ?bool $asYouType = null, ?Connection $db = null)
     {
-        $searcher = $this->getSearcher($db);
+        $searcher = $this->createSearcher($db);
         $searcher->selectIndex("{$index}.index");
 
         if ($asYouType !== null) {
@@ -88,7 +87,7 @@ class TNTSearch extends Component
      */
     public function initIndex(string $index, string $primaryKey, ?Connection $db = null): Searcher
     {
-        $searcher = $this->getSearcher($db);
+        $searcher = $this->createSearcher($db);
 
         if (!file_exists($this->indexPath . "/{$index}.index")) {
             $indexer = $searcher->createIndex("$index.index");
@@ -103,7 +102,7 @@ class TNTSearch extends Component
      * @param Connection|null $db
      * @return Searcher
      */
-    public function getSearcher(?Connection $db = null): Searcher
+    public function createSearcher(?Connection $db = null): Searcher
     {
         $db = $db ?? Yii::$app->getDb()->getMasterPdo();
         $searcher = new Searcher();

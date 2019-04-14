@@ -1,5 +1,5 @@
 {
-    "name": "vxm/yii2-tntsearch",
+    "name": "vxm/yii2-search",
     "description": "Simple full-text search for Yii2 active record",
     "type": "yii2-extension",
     "keywords": ["yii2","extension","full-text-search"],
@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "vxm\\tntsearch\\": "src"
+            "vxm\\search\\": "src"
         }
     },
     "repositories": [

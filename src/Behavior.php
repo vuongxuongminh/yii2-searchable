@@ -5,7 +5,7 @@
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\tntsearch;
+namespace vxm\search;
 
 use yii\base\Behavior as BaseBehavior;
 use yii\db\ActiveRecord;
@@ -27,7 +27,8 @@ class Behavior extends BaseBehavior
     {
         return [
             ActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
-            ActiveRecord::EVENT_AFTER_UPDATE => 'afterSave'
+            ActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
+            ActiveRecord::EVENT_AFTER_DELETE => 'afterDelete'
         ];
     }
 
@@ -41,5 +42,9 @@ class Behavior extends BaseBehavior
 
     }
 
+    public function afterDelete()
+    {
+
+    }
 
 }

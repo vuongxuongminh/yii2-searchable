@@ -9,11 +9,8 @@ namespace vxm\search;
 
 use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\db\conditions\InCondition;
 use yii\db\ExpressionInterface;
-use yii\db\conditions\AndCondition;
 use yii\db\conditions\ConditionInterface;
 
 /**
@@ -25,7 +22,7 @@ use yii\db\conditions\ConditionInterface;
 class SearchableExpression extends BaseObject implements ExpressionInterface
 {
     /**
-     * @var ActiveQuery
+     * @var \yii\db\ActiveQuery
      */
     public $query;
 
@@ -56,7 +53,7 @@ class SearchableExpression extends BaseObject implements ExpressionInterface
      */
     public function getCondition(): ConditionInterface
     {
-        /** @var ActiveRecord $model */
+        /** @var \yii\db\ActiveRecord $model */
         $model = $this->query->modelClass;
         list(, $alias) = $this->getTableNameAndAlias();
         $key = '{{' . $alias . '}}.[[' . current($model::primaryKey()) . ']]';
@@ -70,7 +67,7 @@ class SearchableExpression extends BaseObject implements ExpressionInterface
      *
      * @return array the table name and the table alias.
      */
-    private function getTableNameAndAlias()
+    private function getTableNameAndAlias(): array
     {
         /** @var \yii\db\ActiveRecord $model */
         $query = $this->query;

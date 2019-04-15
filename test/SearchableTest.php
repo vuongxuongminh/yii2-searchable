@@ -30,6 +30,27 @@ class SearchableTest extends TestCase
         Model::makeAllSearchable();
 
         $this->assertTrue(file_exists(Model::getSearchable()->storagePath . '/articles.index'));
+
+        $models = Model::find()->limit(5)->all();
+
+        Model::deleteAllFromSearch();
+        Model::makeSearchable($models);
+
+        $this->assertTrue(file_exists(Model::getSearchable()->storagePath . '/articles.index'));
+    }
+
+    public function testDeleteSearchable()
+    {
+        Model::makeAllSearchable();
+        $model = new Model([
+            'title' => 'deleteSearchable',
+            'article' => 'deleteSearchable'
+        ]);
+        $model->save();
+        $this->assertNotEmpty(Model::searchIds('deleteSearchable'));
+        Model::deleteSearchable($model);
+        $this->assertEmpty(Model::searchIds('deleteSearchable'));
+        $model->delete();
     }
 
     public function testDeleteAllFromSearch()

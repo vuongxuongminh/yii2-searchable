@@ -170,6 +170,30 @@ trait SearchableTrait
     }
 
     /**
+     * Make given model searchable.
+     *
+     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models add to searchable index data.
+     * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function makeSearchable($models): void
+    {
+        static::getSearchable()->queueMakeSearchable($models);
+    }
+
+    /**
+     * Delete given model searchable.
+     *
+     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models delete from searchable index data.
+     * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function deleteSearchable($models): void
+    {
+        static::getSearchable()->queueDeleteFromSearch($models);
+    }
+
+    /**
      * Make all instances of the model searchable.
      *
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
@@ -178,11 +202,7 @@ trait SearchableTrait
     public static function makeAllSearchable(): void
     {
         foreach (static::find()->orderBy(static::searchableKey())->batch() as $models) {
-            $models = array_filter($models, function ($model) {
-                return $model->shouldBeSearchable();
-            });
-
-            static::getSearchable()->queueMakeSearchable($models);
+            static::makeSearchable($models);
         }
     }
 
@@ -234,7 +254,7 @@ trait SearchableTrait
      */
     public function searchable(): void
     {
-        static::getSearchable()->queueMakeSearchable($this);
+        static::makeSearchable($this);
     }
 
     /**
@@ -245,7 +265,7 @@ trait SearchableTrait
      */
     public function unsearchable(): void
     {
-        static::getSearchable()->queueDeleteFromSearch($this);
+        static::deleteSearchable($this);
     }
 
     /**

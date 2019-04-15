@@ -23,7 +23,6 @@ abstract class QueueJob implements JobInterface
      */
     protected $ids = [];
 
-
     /**
      * QueueJob constructor.
      *

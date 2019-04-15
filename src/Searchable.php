@@ -113,7 +113,7 @@ class Searchable extends Component
     /**
      * Dispatch the job to make the given models searchable.
      *
-     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] array $models
+     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models dispatch to queue job
      * @param array $config of tnt search
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
@@ -123,12 +123,10 @@ class Searchable extends Component
         $models = (array)$models;
 
         if (!empty($models)) {
-            /** @var \yii\db\ActiveRecord $modelClass */
-            $modelClass = get_class(current($models));
 
             if ($this->queue === null) {
 
-                $this->createSearcher($modelClass::getDb(), $config)->upsert($models);
+                $this->upsert($models, $config);
             } else {
 
                 $job = new MakeSearchableJob($models);
@@ -150,12 +148,10 @@ class Searchable extends Component
         $models = (array)$models;
 
         if (!empty($models)) {
-            /** @var \yii\db\ActiveRecord $modelClass */
-            $modelClass = get_class(current($models));
 
             if ($this->queue === null) {
 
-                $this->createSearcher($modelClass::getDb(), $config)->delete($models);
+                $this->delete($models, $config);
             } else {
 
                 $job = new DeleteSearchableJob($models);
@@ -165,9 +161,43 @@ class Searchable extends Component
     }
 
     /**
-     * @param Connection|null $db
-     * @param array $config
-     * @return Searcher
+     * Update or insert models to search engine.
+     *
+     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models update or insert to search engine.
+     * @param array $config of tnt search
+     * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function upsert($models, array $config = []): void
+    {
+        $models = (array)$models;
+        /** @var \yii\db\ActiveRecord $modelClass */
+        $modelClass = get_class(current($models));
+        $this->createSearcher($modelClass::getDb(), $config)->upsert($models);
+    }
+
+    /**
+     * Delete models from search engine.
+     *
+     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models need to delete
+     * @param array $config of tnt search
+     * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function delete($models, array $config = []): void
+    {
+        $models = (array)$models;
+        /** @var \yii\db\ActiveRecord $modelClass */
+        $modelClass = get_class(current($models));
+        $this->createSearcher($modelClass::getDb(), $config)->delete($models);
+    }
+
+    /**
+     * Create searcher object.
+     *
+     * @param Connection|null $db use to get database info.
+     * @param array $config of tnt search.
+     * @return Searcher object
      * @throws \yii\base\InvalidConfigException
      */
     public function createSearcher(?Connection $db = null, array $config = []): Searcher

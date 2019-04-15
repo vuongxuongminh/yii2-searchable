@@ -47,9 +47,9 @@ class CommandController extends Controller
     }
 
     /**
-     * Flush all of the models records from the index.
+     * Delete all of the models records from the index.
      */
-    public function actionFlush()
+    public function actionDeleteAll()
     {
         $models = explode(',', $this->models);
         $models = array_filter($models);

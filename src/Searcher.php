@@ -1,6 +1,6 @@
 <?php
 /**
- * @link https://github.com/vuongxuongminh/yii2-tntsearch
+ * @link https://github.com/vuongxuongminh/yii2-search
  * @copyright Copyright (c) 2019 Vuong Xuong Minh
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
@@ -50,15 +50,16 @@ class Searcher extends BaseObject
     }
 
     /**
-     * @param string $query
-     * @param string $index
-     * @param string $mode
-     * @param int $limit
-     * @param bool|null $asYouType
-     * @return array
+     * Search by given query string.
+     *
+     * @param string $index apply to search.
+     * @param string $query apply to search.
+     * @param string $mode boolean or fuzzy.
+     * @param int $limit of values search.
+     * @return array search result.
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      */
-    public function search(string $query, string $index, string $mode, int $limit = 100)
+    public function search(string $index, string $query, string $mode, int $limit = 100): array
     {
         $this->tnt->selectIndex("{$index}.index");
 
@@ -67,11 +68,6 @@ class Searcher extends BaseObject
         } else {
             return $this->tnt->search($query, $limit);
         }
-    }
-
-    public function geoSearch()
-    {
-        
     }
 
     /**

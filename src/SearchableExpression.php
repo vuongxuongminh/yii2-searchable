@@ -1,6 +1,6 @@
 <?php
 /**
- * @link https://github.com/vuongxuongminh/yii2-tntsearch
+ * @link https://github.com/vuongxuongminh/yii2-search
  * @copyright Copyright (c) 2019 Vuong Xuong Minh
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
@@ -49,14 +49,17 @@ class SearchableExpression extends BaseObject implements ExpressionInterface
     }
 
     /**
-     * @return ConditionInterface
+     * Creating condition by search result ids.
+     * It making diff because it call on `prepare` state for ensure an alias table name.
+     *
+     * @return ConditionInterface apply to `where` conditions.
      */
     public function getCondition(): ConditionInterface
     {
-        /** @var \yii\db\ActiveRecord $model */
-        $model = $this->query->modelClass;
+        /** @var \yii\db\ActiveRecord $modelClass */
+        $modelClass = $this->query->modelClass;
         list(, $alias) = $this->getTableNameAndAlias();
-        $key = '{{' . $alias . '}}.[[' . current($model::primaryKey()) . ']]';
+        $key = '{{' . $alias . '}}.[[' . $modelClass::searchableKey() . ']]';
 
         return new InCondition($key, 'IN', $this->ids);
     }
@@ -69,12 +72,12 @@ class SearchableExpression extends BaseObject implements ExpressionInterface
      */
     private function getTableNameAndAlias(): array
     {
-        /** @var \yii\db\ActiveRecord $model */
+        /** @var \yii\db\ActiveRecord $modelClass */
         $query = $this->query;
-        $model = $query->modelClass;
+        $modelClass = $query->modelClass;
 
         if (empty($query->from)) {
-            $tableName = $model::tableName();
+            $tableName = $modelClass::tableName();
         } else {
             $tableName = '';
             // if the first entry in "from" is an alias-tablename-pair return it directly

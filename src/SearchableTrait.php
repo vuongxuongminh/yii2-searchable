@@ -1,6 +1,6 @@
 <?php
 /**
- * @link https://github.com/vuongxuongminh/yii2-tntsearch
+ * @link https://github.com/vuongxuongminh/yii2-search
  * @copyright Copyright (c) 2019 Vuong Xuong Minh
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
@@ -9,6 +9,7 @@ namespace vxm\search;
 
 use Yii;
 
+use yii\db\ActiveQueryInterface;
 use yii\db\Exception;
 
 /**
@@ -22,7 +23,45 @@ trait SearchableTrait
 {
 
     /**
-     * @return Searchable
+     * @inheritDoc
+     * @return \yii\db\Connection
+     */
+    abstract public static function getDb();
+
+    /**
+     * @inheritDoc
+     * @return string
+     */
+    abstract public static function tableName();
+
+    /**
+     * @inheritDoc
+     * @return \yii\db\TableSchema
+     */
+    abstract public static function getTableSchema();
+
+    /**
+     * @inheritDoc
+     * @return mixed
+     */
+    abstract public static function primaryKey();
+
+    /**
+     * @inheritDoc
+     * @return \yii\db\ActiveQuery|\yii\db\ActiveQueryInterface
+     */
+    abstract public static function find();
+
+    /**
+     * @inheritDoc
+     * @return array
+     */
+    abstract public function attributes();
+
+    /**
+     * Get searchable support full-text search for this model class
+     *
+     * @return object|Searchable
      * @throws \yii\base\InvalidConfigException
      */
     public static function getSearchable(): Searchable
@@ -36,94 +75,19 @@ trait SearchableTrait
      * @param string $query to search data
      * @param string $mode using for query search, [[\vxm\search\Searcher::BOOLEAN_SEARCH]] or [[\vxm\search\Searcher::FUZZY_SEARCH]]
      * @param array $config of [[\vxm\search\TNTSearch]]
-     * @return \yii\db\ActiveQuery|\yii\db\ActiveQueryInterface query instance
+     * @return \yii\db\ActiveQuery|ActiveQueryInterface query instance
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
-    public static function search(string $query, string $mode = Searcher::FUZZY_SEARCH, array $config = [])
+    public static function search(string $query, string $mode = Searcher::FUZZY_SEARCH, array $config = []): ActiveQueryInterface
     {
         $ids = static::searchIds($query, $mode, $config);
-
-        return static::createQueryBySearchedIds($ids);
-    }
-
-    /**
-     * Creating active query had been apply geo search ids condition by given location and distance values.
-     *
-     * @param array $currentLocation longitude and latitude location. Ex: ['latitude' => 48.137154, 'longitude' => 11.576124]
-     * @param int $distance of position need to find to current location
-     * @param array $config of tnt search
-     */
-    public static function geoSearch(array $currentLocation, $distance, array $config = [])
-    {
-
-    }
-
-    /**
-     * Search ids by given query string.
-     *
-     * @param string $query to search data
-     * @param string $mode using for query search, `\vxm\search\Searcher::BOOLEAN_MODE` or `\vxm\search\Searcher::FUZZY_MODE`
-     * @param array $config of an object \vxm\search\Searcher
-     * @return array primary key of indexing data search
-     * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
-     * @throws \yii\base\InvalidConfigException
-     */
-    public static function searchIds(string $query, string $mode = Searcher::FUZZY_SEARCH, array $config = [])
-    {
-        $profileToken = "Searching data via query: `{$query}`";
-        Yii::beginProfile($profileToken);
-        /** @var Searcher $searcher */
-        $searcher = static::getSearchable()->createSearcher(static::getDb(), $config);
-
-        try {
-            $result = $searcher->search($query, static::searchableIndex(), $mode);
-
-            return $result['ids'];
-        } finally {
-
-            Yii::endProfile($profileToken);
-        }
-    }
-
-    /**
-     * Creating active query had been apply geo search ids condition by given location and distance values.
-     *
-     * @param array $currentLocation longitude and latitude location. Ex: ['latitude' => 48.137154, 'longitude' => 11.576124]
-     * @param int $distance of position need to find to current location
-     * @param array $config of tnt search
-     */
-    public static function geoSearchIds(array $currentLocation, int $distance, array $config = [])
-    {
-        $profileToken = "Searching position by location: lat: {$currentLocation['latitude']} - long: {$currentLocation['longitude']} distance: {$distance} km";
-        Yii::beginProfile($profileToken);
-        /** @var Searcher $searcher */
-        $searcher = static::getSearchable()->createSearcher(static::getDb(), $config);
-
-        try {
-            $result = $searcher->search($query, static::searchableIndex(), $mode);
-
-            return $result['ids'];
-        } finally {
-
-            Yii::endProfile($profileToken);
-        }
-    }
-
-    /**
-     * Create active query by searched ids
-     *
-     * @param array $ids use to add condition to query
-     * @return \yii\db\ActiveQuery|\yii\db\ActiveQueryInterface the query added given ids condition
-     */
-    private static function createQueryBySearchedIds(array $ids)
-    {
         /** @var \yii\db\ActiveQuery $aq */
-        $query = static::find();
+        $aq = static::find();
 
         if (empty($ids)) {
 
-            $query->andWhere('1 = 0');
+            $aq->andWhere('1 = 0');
         } else {
             /** @var \yii\db\Connection $db */
             $db = static::getDb();
@@ -136,23 +100,49 @@ trait SearchableTrait
                 'query' => $aq,
                 'ids' => $ids
             ]);
-            $query->where = ['AND', $searchableExpression, $aq->where];
+            $aq->where = ['AND', $searchableExpression, $aq->where];
         }
 
-        return $query;
+        return $aq;
+    }
+
+    /**
+     * Search ids by given query string.
+     *
+     * @param string $query to search data.
+     * @param string $mode using for query search, `\vxm\search\Searcher::BOOLEAN_MODE` or `\vxm\search\Searcher::FUZZY_MODE`.
+     * @param array $config of an object \vxm\search\Searcher.
+     * @return array primary key of indexing data search.
+     * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function searchIds(string $query, string $mode = Searcher::FUZZY_SEARCH, array $config = []): array
+    {
+        $profileToken = "Searching data via query: `{$query}`";
+        Yii::beginProfile($profileToken);
+
+        try {
+            $result = static::getSearchable()->search(static::class, $query, $mode, $config);
+
+            return $result['ids'];
+        } finally {
+
+            Yii::endProfile($profileToken);
+        }
     }
 
     /**
      * Delete all instances of the model from the search index.
      *
+     * @throws \yii\base\InvalidConfigException
      */
     public static function deleteAllFromSearch(): void
     {
-        static::getSearchable()->createSearcher(static::getDb())->deleteAll(static::class);
+        static::getSearchable()->deleteAllFromSearch(static::class);
     }
 
     /**
-     * Enable search syncing for this model.
+     * Enable search syncing for this model class.
      */
     public static function enableSearchSyncing(): void
     {
@@ -160,7 +150,7 @@ trait SearchableTrait
     }
 
     /**
-     * Disable search syncing for this model.
+     * Disable search syncing for this model class.
      */
     public static function disableSearchSyncing(): void
     {
@@ -170,8 +160,8 @@ trait SearchableTrait
     /**
      * Temporarily disable search syncing for the given callback.
      *
-     * @param callable $callback
-     * @return mixed
+     * @param callable $callback will be call without syncing mode
+     * @return mixed value of $callback
      */
     public static function withoutSyncingToSearch($callback)
     {
@@ -236,19 +226,7 @@ trait SearchableTrait
      */
     public static function queueMakeSearchable($models): void
     {
-        $models = (array)$models;
-
-        if (!empty($models)) {
-            $searchable = static::getSearchable();
-
-            if ($searchable->queue === null) {
-
-                return $searchable->createSearcher(static::getDb())->upsert($models);
-            }
-
-            $job = new MakeSearchableJob($models);
-            $searchable->queue->push($job);
-        }
+        static::getSearchable()->queueMakeSearchable($models);
     }
 
     /**
@@ -258,21 +236,9 @@ trait SearchableTrait
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
-    public static function queueDeleteFromSearch($models)
+    public static function queueDeleteFromSearch($models): void
     {
-        $models = (array)$models;
-
-        if (!empty($models)) {
-            $searchable = static::getSearchable();
-
-            if ($searchable->queue === null) {
-
-                return $searchable->createSearcher(static::getDb())->delete($models);
-            }
-
-            $job = new DeleteSearchableJob($models);
-            $searchable->queue->push($job);
-        }
+        static::getSearchable()->queueDeleteFromSearch($models);
     }
 
     /**

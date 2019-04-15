@@ -52,6 +52,7 @@ class CommandController extends Controller
     public function actionFlush()
     {
         $models = explode(',', $this->models);
+        $models = array_filter($models);
 
         foreach ($models as $model) {
             $model = trim($model);

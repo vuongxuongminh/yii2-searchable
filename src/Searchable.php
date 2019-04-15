@@ -10,6 +10,7 @@ namespace vxm\search;
 use Yii;
 
 use yii\base\Component;
+use yii\base\InvalidCallException;
 use yii\db\Connection;
 use yii\di\Instance;
 use yii\queue\Queue;
@@ -22,6 +23,21 @@ use yii\queue\Queue;
  */
 class Searchable extends Component
 {
+    /**
+     * Search data with boolean mode
+     */
+    const BOOLEAN_SEARCH = 'boolean';
+
+    /**
+     * Search data with fuzzy mode
+     */
+    const FUZZY_SEARCH = 'fuzzy';
+
+    /**
+     * @var string default search mode for [[search()]] if `$mode` param not set.
+     */
+    public $defaultSearchMode = self::FUZZY_SEARCH;
+
     /**
      * @var string the TNTSearch class.
      */
@@ -84,30 +100,42 @@ class Searchable extends Component
      * @param string $query apply to search.
      * @param string $mode boolean or fuzzy search mode.
      * @param array $config of tnt search.
+     * @param int $limit of values search.
      * @return array search results.
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
-    public function search(string $modelClass, string $query, string $mode, array $config = [])
+    public function search(string $modelClass, string $query, ?string $mode = null, array $config = [], int $limit = 100)
     {
         /** @var \yii\db\ActiveRecord $modelClass */
-        $db = $modelClass::getDb();
-        $index = $modelClass::searchableIndex();
+        $this->initIndex($modelClass, $config);
+        $tnt = $this->createTNTSearch($modelClass::getDb(), $config);
+        $tnt->selectIndex("{$modelClass::searchableIndex()}.index");
+        $mode = $mode ?? $this->defaultSearchMode;
 
-        return $this->createSearcher($db, $config)->search($index, $query, $mode);
+        if ($mode === self::BOOLEAN_SEARCH) {
+            return $tnt->searchBoolean($query, $limit);
+        } else {
+            return $tnt->search($query, $limit);
+        }
     }
 
     /**
      * Delete all instances of the model class from the search index.
      *
      * @param string $modelClass need to delete all instances.
+     * @param array $config of tnt search
      * @throws \yii\base\InvalidConfigException
      */
-    public function deleteAllFromSearch(string $modelClass): void
+    public function deleteAllFromSearch(string $modelClass, array $config = []): void
     {
         /** @var \yii\db\ActiveRecord $modelClass */
+        $tnt = $this->createTNTSearch($modelClass::getDb(), $config);
+        $pathToIndex = $tnt->config['storage'] . "/{$modelClass::searchableIndex()}.index";
 
-        $this->createSearcher($modelClass::getDb())->deleteAll($modelClass);
+        if (file_exists($pathToIndex)) {
+            unlink($pathToIndex);
+        }
     }
 
     /**
@@ -122,16 +150,18 @@ class Searchable extends Component
     {
         $models = (array)$models;
 
-        if (!empty($models)) {
+        if (empty($models)) {
 
-            if ($this->queue === null) {
+            return;
+        }
 
-                $this->upsert($models, $config);
-            } else {
+        if ($this->queue === null) {
 
-                $job = new MakeSearchableJob($models);
-                $this->queue->push($job);
-            }
+            $this->upsert($models, $config);
+        } else {
+
+            $job = new MakeSearchableJob($models);
+            $this->queue->push($job);
         }
     }
 
@@ -147,16 +177,18 @@ class Searchable extends Component
     {
         $models = (array)$models;
 
-        if (!empty($models)) {
+        if (empty($models)) {
 
-            if ($this->queue === null) {
+            return;
+        }
 
-                $this->delete($models, $config);
-            } else {
+        if ($this->queue === null) {
 
-                $job = new DeleteSearchableJob($models);
-                $this->queue->push($job);
-            }
+            $this->delete($models, $config);
+        } else {
+
+            $job = new DeleteSearchableJob($models);
+            $this->queue->push($job);
         }
     }
 
@@ -173,7 +205,40 @@ class Searchable extends Component
         $models = (array)$models;
         /** @var \yii\db\ActiveRecord $modelClass */
         $modelClass = get_class(current($models));
-        $this->createSearcher($modelClass::getDb(), $config)->upsert($models);
+        $this->initIndex($modelClass, $config);
+        $tnt = $this->createTNTSearch($modelClass::getDb(), $config);
+        $tnt->selectIndex("{$modelClass::searchableIndex()}.index");
+        $index = $tnt->getIndex();
+        $index->setPrimaryKey($modelClass::searchableKey());
+
+        foreach ($models as $model) {
+            /** @var \yii\db\ActiveRecord $model */
+            if ($model->getIsNewRecord()) {
+                throw new InvalidCallException('Can not upsert index data via new record!');
+            }
+
+            $fields = $model->searchableFields();
+
+            if (empty($fields)) {
+                return;
+            }
+
+            $data = [];
+
+            foreach ($fields as $field) {
+                if (strpos($field, ' ') !== false) {
+                    list(, $alias) = explode(' ', $field, 2);
+                } else {
+                    $alias = $field;
+                }
+
+                $data[$alias] = $model->getAttribute($field);
+            }
+
+            $index->indexBeginTransaction();
+            $index->update($model->getSearchableKey(), $data);
+            $index->indexEndTransaction();
+        }
     }
 
     /**
@@ -189,18 +254,50 @@ class Searchable extends Component
         $models = (array)$models;
         /** @var \yii\db\ActiveRecord $modelClass */
         $modelClass = get_class(current($models));
-        $this->createSearcher($modelClass::getDb(), $config)->delete($models);
+        $this->initIndex($modelClass, $config);
+        $tnt = $this->createTNTSearch($modelClass::getDb(), $config);
+        $tnt->selectIndex("{$modelClass::searchableIndex()}.index");
+        $index = $tnt->getIndex();
+        $index->setPrimaryKey($modelClass::searchableKey());
+
+        foreach ((array)$models as $model) {
+            /** @var \yii\db\ActiveRecord $model */
+            if ($model->getIsNewRecord()) {
+                throw new InvalidCallException('Can not delete index data via new record!');
+            }
+
+            $index->delete($model->getSearchableKey());
+        }
     }
 
     /**
-     * Create searcher object.
+     * Init index data of model class
+     *
+     * @param string $modelClass to init index data
+     * @param array $config of tnt search
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function initIndex(string $modelClass, array $config = []): void
+    {
+        /** @var \yii\db\ActiveRecord $modelClass */
+        $index = $modelClass::searchableIndex() . '.index';
+        $tnt = $this->createTNTSearch($modelClass::getDb(), $config);
+
+        if (!file_exists($tnt->config['storage'] . "/{$index}")) {
+            $indexer = $tnt->createIndex($index);
+            $indexer->setPrimaryKey($modelClass::searchableKey());
+        }
+    }
+
+    /**
+     * Create tnt search object.
      *
      * @param Connection|null $db use to get database info.
      * @param array $config of tnt search.
-     * @return Searcher object
+     * @return object|TNTSearch
      * @throws \yii\base\InvalidConfigException
      */
-    public function createSearcher(?Connection $db = null, array $config = []): Searcher
+    public function createTNTSearch(?Connection $db = null, array $config = []): TNTSearch
     {
         $db = $db ?? Yii::$app->getDb();
         $dbh = $db->getMasterPdo();
@@ -208,14 +305,14 @@ class Searchable extends Component
             'class' => $this->tntSearchClass,
             'asYouType' => $config['asYouType'] ?? $this->asYouType,
             'fuzziness' => $config['fuzziness'] ?? $this->fuzziness,
-            'fuzzy_distance' => $config['fuzzyDistance'] ?? $this->fuzzyDistance,
-            'fuzzy_prefix_length' => $config['fuzzyPrefixLength'] ?? $this->fuzzyPrefixLength,
-            'fuzzy_max_expansions' => $config['fuzzyMaxExpansions'] ?? $this->fuzzyMaxExpansions
+            'fuzzy_distance' => $config['fuzzy_distance'] ?? $config['fuzzyDistance'] ?? $this->fuzzyDistance,
+            'fuzzy_prefix_length' => $config['fuzzy_prefix_length'] ?? $config['fuzzyPrefixLength'] ?? $this->fuzzyPrefixLength,
+            'fuzzy_max_expansions' => $config['fuzzy_max_expansions'] ?? $config['fuzzyMaxExpansions'] ?? $this->fuzzyMaxExpansions
         ]);
         $tnt->loadConfig(['storage' => $this->storagePath]);
         $tnt->setDatabaseHandle($dbh);
 
-        return Yii::createObject(Searcher::class, [$tnt]);
+        return $tnt;
     }
 
 

@@ -73,13 +73,14 @@ trait SearchableTrait
      * Creating active query had been apply search ids condition by given query string
      *
      * @param string $query to search data
-     * @param string $mode using for query search, [[\vxm\search\Searcher::BOOLEAN_SEARCH]] or [[\vxm\search\Searcher::FUZZY_SEARCH]]
+     * @param string $mode using for query search, [[\vxm\search\Searchable::BOOLEAN_SEARCH]] or [[\vxm\search\Searchable::FUZZY_SEARCH]].
+     * If not set [[\vxm\search\Searchable::$defaultSearchMode]] will be use.
      * @param array $config of [[\vxm\search\TNTSearch]]
      * @return \yii\db\ActiveQuery|ActiveQueryInterface query instance
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
-    public static function search(string $query, string $mode = Searcher::FUZZY_SEARCH, array $config = []): ActiveQueryInterface
+    public static function search(string $query, ?string $mode = null, array $config = []): ActiveQueryInterface
     {
         $ids = static::searchIds($query, $mode, $config);
         /** @var \yii\db\ActiveQuery $aq */
@@ -110,13 +111,14 @@ trait SearchableTrait
      * Search ids by given query string.
      *
      * @param string $query to search data.
-     * @param string $mode using for query search, `\vxm\search\Searcher::BOOLEAN_MODE` or `\vxm\search\Searcher::FUZZY_MODE`.
-     * @param array $config of an object \vxm\search\Searcher.
+     * @param string|null $mode using for query search, [[\vxm\search\Searchable::BOOLEAN_SEARCH]] or [[\vxm\search\Searchable::FUZZY_SEARCH]].
+     * If not set [[\vxm\search\Searchable::$defaultSearchMode]] will be use.
+     * @param array $config of an object [[\vxm\search\TNTSearch]].
      * @return array primary key of indexing data search.
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
-    public static function searchIds(string $query, string $mode = Searcher::FUZZY_SEARCH, array $config = []): array
+    public static function searchIds(string $query, ?string $mode = null, array $config = []): array
     {
         $profileToken = "Searching data via query: `{$query}`";
         Yii::beginProfile($profileToken);
@@ -187,7 +189,7 @@ trait SearchableTrait
             return $model->shouldBeSearchable();
         });
 
-        static::queueMakeSearchable($models);
+        static::getSearchable()->queueMakeSearchable($models);
     }
 
     /**
@@ -221,30 +223,6 @@ trait SearchableTrait
     }
 
     /**
-     * Dispatch the job to make the given models searchable.
-     *
-     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] array $models
-     * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
-     * @throws \yii\base\InvalidConfigException
-     */
-    public static function queueMakeSearchable($models): void
-    {
-        static::getSearchable()->queueMakeSearchable($models);
-    }
-
-    /**
-     * Dispatch the job to make the given models unsearchable.
-     *
-     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] array $models
-     * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
-     * @throws \yii\base\InvalidConfigException
-     */
-    public static function queueDeleteFromSearch($models): void
-    {
-        static::getSearchable()->queueDeleteFromSearch($models);
-    }
-
-    /**
      * Determine if the model should be searchable.
      *
      * @return bool weather instance should be insert to searchable index data
@@ -262,7 +240,7 @@ trait SearchableTrait
      */
     public function searchable(): void
     {
-        static::queueMakeSearchable($this);
+        static::getSearchable()->queueMakeSearchable($this);
     }
 
     /**
@@ -273,7 +251,7 @@ trait SearchableTrait
      */
     public function unsearchable(): void
     {
-        static::queueDeleteFromSearch($this);
+        static::getSearchable()->queueDeleteFromSearch($this);
     }
 
     /**

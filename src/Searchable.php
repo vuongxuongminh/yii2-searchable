@@ -11,8 +11,11 @@ use Yii;
 
 use yii\base\Component;
 use yii\db\Connection;
+use yii\di\Instance;
+use yii\queue\Queue;
 
 use TeamTNT\TNTSearch\TNTSearch;
+
 
 /**
  * Class TNTSearch
@@ -22,9 +25,10 @@ use TeamTNT\TNTSearch\TNTSearch;
  */
 class Searchable extends Component
 {
-    public $asYouType = false;
 
-    public $mode = Searcher::FUZZY_MODE;
+    public $tntSearchClass = TNTSearch::class;
+
+    public $asYouType = false;
 
     public $fuzziness = false;
 
@@ -37,6 +41,11 @@ class Searchable extends Component
     public $storagePath = '@runtime/vxm/searchable';
 
     /**
+     * @var Queue|null
+     */
+    public $queue;
+
+    /**
      * @inheritDoc
      * @throws \yii\base\InvalidConfigException
      */
@@ -44,21 +53,25 @@ class Searchable extends Component
     {
         $this->storagePath = Yii::getAlias($this->storagePath);
 
+        if ($this->queue !== null) {
+            $this->queue = Instance::ensure($this->queue, Queue::class);
+        }
+
         parent::init();
     }
 
     /**
-     * @param array $config
-     * @param string|null $mode
      * @param Connection|null $db
+     * @param array $config
      * @return Searcher
      * @throws \yii\base\InvalidConfigException
      */
-    public function createSearcher(array $config = [], ?string $mode = null, ?Connection $db = null): Searcher
+    public function createSearcher(?Connection $db = null, array $config = []): Searcher
     {
         $db = $db ?? Yii::$app->getDb();
+        $dbh = $db->getMasterPdo();
         $tnt = Yii::createObject([
-            'class' => TNTSearch::class,
+            'class' => $this->tntSearchClass,
             'asYouType' => $config['asYouType'] ?? $this->asYouType,
             'fuzziness' => $config['fuzziness'] ?? $this->fuzziness,
             'fuzzy_distance' => $config['fuzzyDistance'] ?? $this->fuzzyDistance,
@@ -66,9 +79,10 @@ class Searchable extends Component
             'fuzzy_max_expansions' => $config['fuzzyMaxExpansions'] ?? $this->fuzzyMaxExpansions
         ]);
         $tnt->loadConfig(['storage' => $this->storagePath]);
-        $tnt->setDatabaseHandle($db->getMasterPdo());
+        $tnt->setDatabaseHandle($dbh);
 
-        return Yii::createObject(Searcher::class, [$tnt, $mode ?? $this->mode]);
+        return Yii::createObject(Searcher::class, [$tnt]);
     }
+
 
 }

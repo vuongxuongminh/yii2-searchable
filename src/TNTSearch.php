@@ -7,9 +7,11 @@
 
 namespace vxm\search;
 
+use Yii;
+
 use yii\base\Configurable;
 
-use TeamTNT\TNTSearch\TNTSearch as BaseTNTSearch;
+use TeamTNT\TNTSearch\TNTGeoSearch as BaseTNTSearch;
 
 /**
  * Class TNTSearch
@@ -19,5 +21,16 @@ use TeamTNT\TNTSearch\TNTSearch as BaseTNTSearch;
  */
 class TNTSearch extends BaseTNTSearch implements Configurable
 {
+    /**
+     * @inheritDoc
+     */
+    public function __construct(array $config = [])
+    {
+        if (!empty($config)) {
+            Yii::configure($this, $config);
+        }
+
+        parent::__construct();
+    }
 
 }

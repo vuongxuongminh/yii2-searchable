@@ -12,7 +12,6 @@ use yii\db\ActiveRecord;
 
 /**
  * Class Behavior support syncing record event with indexing data.
- * Base ideas extract from [`laravel/scout`](https://github.com/laravel/scout) package.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0

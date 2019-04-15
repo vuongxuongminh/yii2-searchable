@@ -221,22 +221,10 @@ class Searchable extends Component
         foreach ($models as $model) {
             /** @var \yii\db\ActiveRecord $model */
 
-            $fields = $model->searchableFields();
+            $data = $model->toSearchableArray();
 
-            if (empty($fields)) {
+            if (empty($data)) {
                 return;
-            }
-
-            $data = [];
-
-            foreach ($fields as $field) {
-                if (strpos($field, ' ') !== false) {
-                    list(, $alias) = explode(' ', $field, 2);
-                } else {
-                    $alias = $field;
-                }
-
-                $data[$alias] = $model->getAttribute($field);
             }
 
             $index->indexBeginTransaction();

@@ -36,7 +36,7 @@ class CommandTest extends TestCase
         /** @var \vxm\search\CommandController $controller */
         list($controller) = Yii::$app->createController('searchable');
         $controller->models = Model::class;
-        $controller->runAction('delete-all');
+        $controller->runAction('delete');
         $this->assertFalse(file_exists(Model::getSearchable()->storagePath . '/articles.index'));
     }
 

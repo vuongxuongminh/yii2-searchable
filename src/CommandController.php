@@ -62,9 +62,9 @@ class CommandController extends Controller
     }
 
     /**
-     * Delete all of the models records from the index.
+     * Delete the model class records from the index.
      */
-    public function actionDeleteAll()
+    public function actionDelete()
     {
         $models = explode(',', $this->models);
         $models = array_filter($models);

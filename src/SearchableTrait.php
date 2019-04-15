@@ -14,7 +14,6 @@ use yii\db\Exception;
 
 /**
  * Trait SearchableTrait support implementing full-text search for the active record classes.
- * Base ideas extract from [`laravel/scout`](https://github.com/laravel/scout) package.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
@@ -198,14 +197,13 @@ trait SearchableTrait
     }
 
     /**
-     * Get the indexable data fields of the model. By default columns name of the table will be use.
+     * Get the indexable data array for the model.
      *
      * @return array ['field' => 'value'] or ['field alias' => 'value'].
-     * @throws \yii\base\InvalidConfigException
      */
-    public static function searchableFields(): array
+    public function toSearchableArray(): array
     {
-        return array_keys(static::getTableSchema()->columns);
+        return $this->toArray();
     }
 
     /**

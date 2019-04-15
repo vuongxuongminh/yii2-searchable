@@ -183,6 +183,9 @@ trait SearchableTrait
     public static function makeAllSearchable(): void
     {
         $models = static::find()->orderBy(static::searchableKey())->all();
+        $models = array_filter($models, function ($model) {
+            return $model->shouldBeSearchable();
+        });
 
         static::queueMakeSearchable($models);
     }

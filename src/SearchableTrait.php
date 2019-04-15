@@ -53,12 +53,6 @@ trait SearchableTrait
     abstract public static function find();
 
     /**
-     * @inheritDoc
-     * @return array
-     */
-    abstract public function attributes();
-
-    /**
      * Get searchable support full-text search for this model class.
      *
      * @return object|Searchable
@@ -101,7 +95,7 @@ trait SearchableTrait
                 'query' => $aq,
                 'ids' => $ids
             ]);
-            $aq->where = ['AND', $searchableExpression, $aq->where];
+            $aq->andWhere($searchableExpression);
         }
 
         return $aq;
@@ -114,7 +108,7 @@ trait SearchableTrait
      * @param string|null $mode using for query search, [[\vxm\search\Searchable::BOOLEAN_SEARCH]] or [[\vxm\search\Searchable::FUZZY_SEARCH]].
      * If not set [[\vxm\search\Searchable::$defaultSearchMode]] will be use.
      * @param array $config of [[\vxm\search\TNTSearch]].
-     * @return array primary key of indexing data search.
+     * @return array search key values of indexing data search.
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
@@ -184,12 +178,13 @@ trait SearchableTrait
      */
     public static function makeAllSearchable(): void
     {
-        $models = static::find()->orderBy(static::searchableKey())->all();
-        $models = array_filter($models, function ($model) {
-            return $model->shouldBeSearchable();
-        });
+        foreach (static::find()->orderBy(static::searchableKey())->batch() as $models) {
+            $models = array_filter($models, function ($model) {
+                return $model->shouldBeSearchable();
+            });
 
-        static::getSearchable()->queueMakeSearchable($models);
+            static::getSearchable()->queueMakeSearchable($models);
+        }
     }
 
     /**
@@ -206,10 +201,11 @@ trait SearchableTrait
      * Get the indexable data fields of the model. By default columns name of the table will be use.
      *
      * @return array ['field' => 'value'] or ['field alias' => 'value'].
+     * @throws \yii\base\InvalidConfigException
      */
     public static function searchableFields(): array
     {
-        return static::getTableSchema()->columns;
+        return array_keys(static::getTableSchema()->columns);
     }
 
     /**
@@ -263,13 +259,12 @@ trait SearchableTrait
      */
     public function getSearchableKey(bool $asArray = false)
     {
-        $data = $this->attributes();
         $key = static::searchableKey();
 
         if ($asArray) {
-            return [$key => $data[$key]];
+            return [$key => $this->$key];
         } else {
-            return $data[$key];
+            return $this->$key;
         }
     }
 

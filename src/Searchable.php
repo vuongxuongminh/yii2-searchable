@@ -71,7 +71,7 @@ class Searchable extends Component
     /**
      * @var string default storage path of index data.
      */
-    public $storagePath = '@runtime/vxm/searchable';
+    public $storagePath = '@runtime/vxm/search';
 
     /**
      * @var Queue|null use for support make or delete index data via worker.
@@ -114,8 +114,10 @@ class Searchable extends Component
         $mode = $mode ?? $this->defaultSearchMode;
 
         if ($mode === self::BOOLEAN_SEARCH) {
+
             return $tnt->searchBoolean($query, $limit);
         } else {
+
             return $tnt->search($query, $limit);
         }
     }
@@ -148,7 +150,7 @@ class Searchable extends Component
      */
     public function queueMakeSearchable($models, array $config = []): void
     {
-        $models = (array)$models;
+        $models = is_array($models) ? $models : [$models];
 
         if (empty($models)) {
 
@@ -175,7 +177,7 @@ class Searchable extends Component
      */
     public function queueDeleteFromSearch($models, array $config = []): void
     {
-        $models = (array)$models;
+        $models = is_array($models) ? $models : [$models];
 
         if (empty($models)) {
 
@@ -202,9 +204,14 @@ class Searchable extends Component
      */
     public function upsert($models, array $config = []): void
     {
-        $models = (array)$models;
+        $models = is_array($models) ? $models : [$models];
         /** @var \yii\db\ActiveRecord $modelClass */
-        $modelClass = get_class(current($models));
+        try {
+            $modelClass = get_class(current($models));
+        } catch (\Throwable $t) {
+            var_dump(current($models));
+            die;
+        }
         $this->initIndex($modelClass, $config);
         $tnt = $this->createTNTSearch($modelClass::getDb(), $config);
         $tnt->selectIndex("{$modelClass::searchableIndex()}.index");
@@ -213,9 +220,6 @@ class Searchable extends Component
 
         foreach ($models as $model) {
             /** @var \yii\db\ActiveRecord $model */
-            if ($model->getIsNewRecord()) {
-                throw new InvalidCallException('Can not upsert index data via new record!');
-            }
 
             $fields = $model->searchableFields();
 
@@ -251,7 +255,7 @@ class Searchable extends Component
      */
     public function delete($models, array $config = []): void
     {
-        $models = (array)$models;
+        $models = is_array($models) ? $models : [$models];
         /** @var \yii\db\ActiveRecord $modelClass */
         $modelClass = get_class(current($models));
         $this->initIndex($modelClass, $config);
@@ -260,12 +264,8 @@ class Searchable extends Component
         $index = $tnt->getIndex();
         $index->setPrimaryKey($modelClass::searchableKey());
 
-        foreach ((array)$models as $model) {
+        foreach ($models as $model) {
             /** @var \yii\db\ActiveRecord $model */
-            if ($model->getIsNewRecord()) {
-                throw new InvalidCallException('Can not delete index data via new record!');
-            }
-
             $index->delete($model->getSearchableKey());
         }
     }

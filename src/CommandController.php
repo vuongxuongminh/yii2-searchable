@@ -7,6 +7,7 @@
 
 namespace vxm\search;
 
+use yii\base\InvalidArgumentException;
 use yii\console\Controller;
 
 /**
@@ -18,9 +19,9 @@ use yii\console\Controller;
 class CommandController extends Controller
 {
     /**
-     * @var string models class name separate by `,`.
+     * @var string|null models class name separate by `,`.
      */
-    public $models = '';
+    public $models;
 
     /**
      * @inheritDoc
@@ -28,6 +29,20 @@ class CommandController extends Controller
     public function options($actionID)
     {
         return array_merge(parent::options($actionID), ['models']);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function beforeAction($action)
+    {
+        $result = parent::beforeAction($action);
+
+        if ($this->models === null) {
+            throw new InvalidArgumentException('`models` options must be set!');
+        }
+
+        return $result;
     }
 
     /**
@@ -58,10 +73,9 @@ class CommandController extends Controller
             $model = trim($model);
             $model::deleteAllFromSearch();
 
-            $this->stdout('All [' . $model . '] records have been flushed.');
+            $this->stdout('All [' . $model . '] records have been deleted.');
         }
     }
-
 
 
 }

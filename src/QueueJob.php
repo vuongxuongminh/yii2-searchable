@@ -30,7 +30,9 @@ abstract class QueueJob implements JobInterface
      */
     public function __construct($models)
     {
-        foreach ((array)$models as $model) {
+        $models = is_array($models) ? $models : [$models];
+
+        foreach ($models as $model) {
             /** @var $model \yii\db\ActiveRecord */
             foreach ($model->getPrimaryKey(true) as $key => $value) {
                 $this->ids[$key][] = $value;

@@ -8,7 +8,7 @@
 namespace vxm\search;
 
 /**
- * Class DeleteSearchableJob support delete searchable index data via worker
+ * Class DeleteSearchableJob support delete searchable index data via worker.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0

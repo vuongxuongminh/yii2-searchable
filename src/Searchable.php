@@ -16,7 +16,7 @@ use yii\di\Instance;
 use yii\queue\Queue;
 
 /**
- * Class TNTSearch support full-text search via tnt search
+ * Class TNTSearch support full-text search via tnt search.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
@@ -24,12 +24,12 @@ use yii\queue\Queue;
 class Searchable extends Component
 {
     /**
-     * Search data with boolean mode
+     * Search data with boolean mode.
      */
     const BOOLEAN_SEARCH = 'boolean';
 
     /**
-     * Search data with fuzzy mode
+     * Search data with fuzzy mode.
      */
     const FUZZY_SEARCH = 'fuzzy';
 
@@ -96,10 +96,10 @@ class Searchable extends Component
     /**
      * Search by model class via given query string.
      *
-     * @param string $modelClass need to search
+     * @param string $modelClass need to search.
      * @param string $query apply to search.
      * @param string $mode boolean or fuzzy search mode.
-     * @param array $config of tnt search.
+     * @param array $config of [[\vxm\search\TNTSearch]].
      * @param int $limit of values search.
      * @return array search results.
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
@@ -124,7 +124,7 @@ class Searchable extends Component
      * Delete all instances of the model class from the search index.
      *
      * @param string $modelClass need to delete all instances.
-     * @param array $config of tnt search
+     * @param array $config of [[\vxm\search\TNTSearch]].
      * @throws \yii\base\InvalidConfigException
      */
     public function deleteAllFromSearch(string $modelClass, array $config = []): void
@@ -141,8 +141,8 @@ class Searchable extends Component
     /**
      * Dispatch the job to make the given models searchable.
      *
-     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models dispatch to queue job
-     * @param array $config of tnt search
+     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models dispatch to queue job.
+     * @param array $config of [[\vxm\search\TNTSearch]].
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
@@ -168,8 +168,8 @@ class Searchable extends Component
     /**
      * Dispatch the job to make the given models unsearchable.
      *
-     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] array $models
-     * @param array $config of tnt search
+     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models dispatch to queue.
+     * @param array $config of [[\vxm\search\TNTSearch]].
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
@@ -195,8 +195,8 @@ class Searchable extends Component
     /**
      * Update or insert models to search engine.
      *
-     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models update or insert to search engine.
-     * @param array $config of tnt search
+     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models dispatch to queue.
+     * @param array $config of [[\vxm\search\TNTSearch]].
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
@@ -244,8 +244,8 @@ class Searchable extends Component
     /**
      * Delete models from search engine.
      *
-     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models need to delete
-     * @param array $config of tnt search
+     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models need to delete.
+     * @param array $config of [[\vxm\search\TNTSearch]].
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
@@ -271,10 +271,10 @@ class Searchable extends Component
     }
 
     /**
-     * Init index data of model class
+     * Init index data of model class.
      *
-     * @param string $modelClass to init index data
-     * @param array $config of tnt search
+     * @param string $modelClass to init index data.
+     * @param array $config of [[\vxm\search\TNTSearch]].
      * @throws \yii\base\InvalidConfigException
      */
     public function initIndex(string $modelClass, array $config = []): void
@@ -293,7 +293,7 @@ class Searchable extends Component
      * Create tnt search object.
      *
      * @param Connection|null $db use to get database info.
-     * @param array $config of tnt search.
+     * @param array $config of [[\vxm\search\TNTSearch]].
      * @return object|TNTSearch
      * @throws \yii\base\InvalidConfigException
      */

@@ -22,6 +22,7 @@ class SearchableBehavior extends Behavior
 
     /**
      * @var \yii\db\ActiveRecord
+     * @inheritDoc
      */
     public $owner;
 
@@ -81,7 +82,7 @@ class SearchableBehavior extends Behavior
     /**
      * Enable syncing for the given class.
      *
-     * @param string $class of records need to enable syncing
+     * @param string $class of records need to enable syncing.
      */
     public static function enableSyncingFor($class): void
     {
@@ -91,7 +92,7 @@ class SearchableBehavior extends Behavior
     /**
      * Disable syncing for the given class.
      *
-     * @param string $class of records need to disable syncing
+     * @param string $class of records need to disable syncing.
      */
     public static function disableSyncingFor($class): void
     {
@@ -101,8 +102,8 @@ class SearchableBehavior extends Behavior
     /**
      * Determine if syncing is disabled for the given class or model.
      *
-     * @param object|string $class of records need to disable syncing
-     * @return bool weather syncing disabled
+     * @param object|string $class of records need to disable syncing.
+     * @return bool weather syncing disabled.
      */
     public static function syncingDisabledFor($class): bool
     {

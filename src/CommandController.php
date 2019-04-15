@@ -10,7 +10,7 @@ namespace vxm\search;
 use yii\console\Controller;
 
 /**
- * Class CommandController support import and flush model classes
+ * Class CommandController support import and flush model classes.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
@@ -18,7 +18,7 @@ use yii\console\Controller;
 class CommandController extends Controller
 {
     /**
-     * @var string models class name separate by `,`
+     * @var string models class name separate by `,`.
      */
     public $models = '';
 
@@ -31,7 +31,7 @@ class CommandController extends Controller
     }
 
     /**
-     * Import the given models into the search index
+     * Import the given models into the search index.
      */
     public function actionImport()
     {

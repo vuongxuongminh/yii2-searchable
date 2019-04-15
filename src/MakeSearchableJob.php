@@ -8,7 +8,7 @@
 namespace vxm\search;
 
 /**
- * Class MakeSearchableJob support make searchable index data via worker
+ * Class MakeSearchableJob support make searchable index data via worker.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0

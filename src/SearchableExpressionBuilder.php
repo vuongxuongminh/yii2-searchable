@@ -12,7 +12,7 @@ use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * Class SearchableConditionBuilder for build the [[SearchableCondition]]
+ * Class SearchableConditionBuilder for build the [[SearchableCondition]].
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0

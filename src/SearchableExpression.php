@@ -14,7 +14,7 @@ use yii\db\ExpressionInterface;
 use yii\db\conditions\ConditionInterface;
 
 /**
- * Class SearchableExpression make a searchable condition for ensure an alias of table name
+ * Class SearchableExpression make a searchable condition for ensure an alias of table name.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
@@ -66,7 +66,7 @@ class SearchableExpression extends BaseObject implements ExpressionInterface
 
     /**
      * Returns the table name and the table alias for [[query::modelClass]].
-     * This method extract from \yii\db\ActiveQuery
+     * This method extract from \yii\db\ActiveQuery.
      *
      * @return array the table name and the table alias.
      */

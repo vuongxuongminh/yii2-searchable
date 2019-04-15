@@ -59,7 +59,7 @@ trait SearchableTrait
     abstract public function attributes();
 
     /**
-     * Get searchable support full-text search for this model class
+     * Get searchable support full-text search for this model class.
      *
      * @return object|Searchable
      * @throws \yii\base\InvalidConfigException
@@ -70,13 +70,13 @@ trait SearchableTrait
     }
 
     /**
-     * Creating active query had been apply search ids condition by given query string
+     * Creating active query had been apply search ids condition by given query string.
      *
-     * @param string $query to search data
+     * @param string $query to search data.
      * @param string $mode using for query search, [[\vxm\search\Searchable::BOOLEAN_SEARCH]] or [[\vxm\search\Searchable::FUZZY_SEARCH]].
      * If not set [[\vxm\search\Searchable::$defaultSearchMode]] will be use.
-     * @param array $config of [[\vxm\search\TNTSearch]]
-     * @return \yii\db\ActiveQuery|ActiveQueryInterface query instance
+     * @param array $config of [[\vxm\search\TNTSearch]].
+     * @return \yii\db\ActiveQuery|ActiveQueryInterface query instance.
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
@@ -113,7 +113,7 @@ trait SearchableTrait
      * @param string $query to search data.
      * @param string|null $mode using for query search, [[\vxm\search\Searchable::BOOLEAN_SEARCH]] or [[\vxm\search\Searchable::FUZZY_SEARCH]].
      * If not set [[\vxm\search\Searchable::$defaultSearchMode]] will be use.
-     * @param array $config of an object [[\vxm\search\TNTSearch]].
+     * @param array $config of [[\vxm\search\TNTSearch]].
      * @return array primary key of indexing data search.
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
@@ -162,8 +162,8 @@ trait SearchableTrait
     /**
      * Temporarily disable search syncing for the given callback.
      *
-     * @param callable $callback will be call without syncing mode
-     * @return mixed value of $callback
+     * @param callable $callback will be call without syncing mode.
+     * @return mixed value of $callback.
      */
     public static function withoutSyncingToSearch($callback)
     {
@@ -195,7 +195,7 @@ trait SearchableTrait
     /**
      * Get the index name for the model.
      *
-     * @return string the name of an index
+     * @return string the name of an index.
      */
     public static function searchableIndex(): string
     {
@@ -203,9 +203,9 @@ trait SearchableTrait
     }
 
     /**
-     * Get the indexable data fields of the model. By default columns name of the table will be use
+     * Get the indexable data fields of the model. By default columns name of the table will be use.
      *
-     * @return array ['field' => 'value'] or ['field alias' => 'value']
+     * @return array ['field' => 'value'] or ['field alias' => 'value'].
      */
     public static function searchableFields(): array
     {
@@ -215,7 +215,7 @@ trait SearchableTrait
     /**
      * Get searchable key by default primary key will be use.
      *
-     * @return string|int key name
+     * @return string|int key name.
      */
     public static function searchableKey()
     {
@@ -225,7 +225,7 @@ trait SearchableTrait
     /**
      * Determine if the model should be searchable.
      *
-     * @return bool weather instance should be insert to searchable index data
+     * @return bool weather instance should be insert to searchable index data.
      */
     public function shouldBeSearchable(): bool
     {
@@ -258,7 +258,7 @@ trait SearchableTrait
      * Get searchable key value by default the primary key will be use.
      *
      * @param bool $asArray weather return an array have a key is a searchable key and value is an value of key or only value.
-     * @return string|int|string[]|int[] value of an searchable key
+     * @return string|int|string[]|int[] value of an searchable key.
      * @throws Exception
      */
     public function getSearchableKey(bool $asArray = false)

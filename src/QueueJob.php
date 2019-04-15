@@ -10,7 +10,7 @@ namespace vxm\search;
 use yii\queue\JobInterface;
 
 /**
- * Class QueueJob
+ * Class QueueJob providing base methods need for index data jobs.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
@@ -19,14 +19,14 @@ abstract class QueueJob implements JobInterface
 {
 
     /**
-     * @var array primary key for invoke records
+     * @var array primary key for invoke records.
      */
     protected $ids = [];
 
     /**
      * QueueJob constructor.
      *
-     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[] $models need to making searchable index data
+     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[] $models need to making searchable index data.
      */
     public function __construct($models)
     {
@@ -51,9 +51,9 @@ abstract class QueueJob implements JobInterface
     }
 
     /**
-     * Solve models job
+     * Solve models job.
      *
-     * @param array|\yii\db\ActiveRecord[] $models need to be execute searchable index job
+     * @param array|\yii\db\ActiveRecord[] $models need to be execute searchable index job.
      */
     abstract protected function resolve(array $models): void;
 }

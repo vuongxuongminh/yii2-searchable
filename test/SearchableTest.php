@@ -17,7 +17,7 @@ use Yii;
  */
 class SearchableTest extends TestCase
 {
-    
+
     public function testBootable()
     {
         $this->assertNotNull(Yii::$app->get('searchable', false));

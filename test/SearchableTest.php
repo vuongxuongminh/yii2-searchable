@@ -17,8 +17,7 @@ use Yii;
  */
 class SearchableTest extends TestCase
 {
-
-
+    
     public function testBootable()
     {
         $this->assertNotNull(Yii::$app->get('searchable', false));
@@ -31,6 +30,14 @@ class SearchableTest extends TestCase
         Model::makeAllSearchable();
 
         $this->assertTrue(file_exists(Model::getSearchable()->storagePath . '/articles.index'));
+    }
+
+    public function testDeleteAllFromSearch()
+    {
+        Model::makeAllSearchable();
+        Model::deleteAllFromSearch();
+
+        $this->assertFalse(file_exists(Model::getSearchable()->storagePath . '/articles.index'));
     }
 
     public function testSearchMode()

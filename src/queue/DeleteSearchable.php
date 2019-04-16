@@ -24,7 +24,7 @@ class DeleteSearchable extends Job
         if (!empty($models)) {
 
             $modelClass = get_class(current($models));
-            $modelClass::getSearchable()->createSearcher($modelClass::getDb())->delete($models);
+            $modelClass::getSearchable()->delete($models);
         }
     }
 

@@ -24,7 +24,7 @@ class MakeSearchable extends Job
         if (!empty($models)) {
 
             $modelClass = get_class(current($models));
-            $modelClass::getSearchable()->createSearcher($modelClass::getDb())->upsert($models);
+            $modelClass::getSearchable()->upsert($models);
         }
     }
 

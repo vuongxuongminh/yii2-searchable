@@ -238,9 +238,9 @@ trait SearchableTrait
     /**
      * Get searchable key by default primary key will be use.
      *
-     * @return string|int key name.
+     * @return string key name.
      */
-    public static function searchableKey()
+    public static function searchableKey(): string
     {
         return current(static::primaryKey());
     }

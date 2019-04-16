@@ -208,31 +208,22 @@ class Searchable extends Component
     {
         $models = is_array($models) ? $models : [$models];
         /** @var \yii\db\ActiveRecord $modelClass */
-        try {
-            $modelClass = get_class(current($models));
-        } catch (\Throwable $t) {
-            var_dump(current($models));
-            die;
-        }
+        $modelClass = get_class(current($models));
         $this->initIndex($modelClass, $config);
         $tnt = $this->createTNTSearch($modelClass::getDb(), $config);
         $tnt->selectIndex("{$modelClass::searchableIndex()}.index");
         $index = $tnt->getIndex();
         $index->setPrimaryKey($modelClass::searchableKey());
+        $index->indexBeginTransaction();
 
         foreach ($models as $model) {
-            /** @var \yii\db\ActiveRecord $model */
 
-            $data = $model->toSearchableArray();
-
-            if (empty($data)) {
-                return;
+            if ($data = $model->toSearchableArray()) {
+                $index->update($model->getSearchableKey(), $data);
             }
-
-            $index->indexBeginTransaction();
-            $index->update($model->getSearchableKey(), $data);
-            $index->indexEndTransaction();
         }
+
+        $index->indexEndTransaction();
     }
 
     /**

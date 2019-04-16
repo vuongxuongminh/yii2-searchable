@@ -392,7 +392,7 @@ $posts = \app\models\Post::search('vxm')->joinWith('category')->andWhere(Categor
 
 ### Search mode
 
-You can choice a `boolean` or `fuzzy` search mode:
+You can choice a `boolean` or `fuzzy` search mode as a second parameter if not set `defaultSearchMode` of `Searchable` component will be use:
 
 ```php
 $posts = \app\models\Post::search('vxm', 'fuzzy', ['fuzziness' => true])->all();

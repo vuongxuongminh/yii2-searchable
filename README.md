@@ -24,7 +24,7 @@ Require Yii2 Search using [Composer](https://getcomposer.org):
 composer require vxm/yii2-searchable
 ```
 
-Finally, add the `\vxm\searchable\SearchableTrait` trait and attach `vxm\searchable\SearchableBehavior` to the active record you would like to make searchable. This will help sync the model with index data
+Finally, add the `\vxm\searchable\SearchableTrait` trait and attach `vxm\searchable\SearchableBehavior` behavior to the active record you would like to make searchable. This will help sync the model with index data
 
 ```php
 use vxm\searchable\SearchableBehavior;

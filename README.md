@@ -1,4 +1,4 @@
-# Yii2 Full-Text Search
+# Yii2 Searchable
 
 [![Latest Stable Version](https://poser.pugx.org/vxm/yii2-searchable/v/stable)](https://packagist.org/packages/vxm/yii2-searchable)
 [![Total Downloads](https://poser.pugx.org/vxm/yii2-searchable/downloads)](https://packagist.org/packages/vxm/yii2-searchable)

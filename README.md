@@ -27,8 +27,8 @@ composer require vxm/yii2-search
 Finally, add the `\vxm\searchable\SearchableTrait` trait and attach `vxm\searchable\SearchableBehavior` to the active record you would like to make searchable. This will help sync the model with index data
 
 ```php
-use vxm\search\SearchableBehavior;
-use vxm\search\SearchableTrait;
+use vxm\searchable\SearchableBehavior;
+use vxm\searchable\SearchableTrait;
 
 class Article extends ActiveRecord
 {
@@ -61,7 +61,7 @@ or an array config of it.
 ```php
 'components' => [
     'searchable' => [
-        'class' => 'vxm\search\Searchable',
+        'class' => 'vxm\searchable\Searchable',
         'queue' => 'queueComponentId'
     ]
 ]
@@ -76,10 +76,10 @@ By default a component will be add to your application components via bootstrapp
 ```php
 'components' => [
     'searchable' => [
-        'class' => 'vxm\search\Searchable',
+        'class' => 'vxm\searchable\Searchable',
         'storagePath' => '@runtime/vxm/search',
         'queue' => null, // an optional not required
-        'defaultSearchMode' => \vxm\search\Searchable::FUZZY_SEARCH,
+        'defaultSearchMode' => \vxm\searchable\Searchable::FUZZY_SEARCH,
         'asYouType' => false,
         'fuzziness' => false,
         'fuzzyPrefixLength' => 2,
@@ -97,8 +97,8 @@ In other words, you can think of each index like a MySQL table. By default, each
 Typically, this is the plural form of the model name; however, you are free to customize the `index` name by overriding the `searchableIndex` static method on the Active Record model class:
 
 ```php
-use vxm\search\SearchableBehavior;
-use vxm\search\SearchableTrait;
+use vxm\searchable\SearchableBehavior;
+use vxm\searchable\SearchableTrait;
 
 class Article extends ActiveRecord
 {
@@ -135,8 +135,8 @@ If you would like to customize the data that is synchronized to the search index
 you may override the `toSearchableArray` method on the model:
 
 ```php
-use vxm\search\SearchableBehavior;
-use vxm\search\SearchableTrait;
+use vxm\searchable\SearchableBehavior;
+use vxm\searchable\SearchableTrait;
 
 class Article extends ActiveRecord
 {
@@ -176,8 +176,8 @@ By default, the primary key name of the model as the unique ID stored in the sea
 If you need to customize this behavior, you may override the `searchableKey` static method on the model:
 
 ```php
-use vxm\search\SearchableBehavior;
-use vxm\search\SearchableTrait;
+use vxm\searchable\SearchableBehavior;
+use vxm\searchable\SearchableTrait;
 
 class Article extends ActiveRecord
 {
@@ -230,7 +230,7 @@ php yii searchable/import --models="app\models\Post, app\models\Category"
 
 ### Adding Records
 
-Once you have added the `vxm\search\SearchableTrait` and attached the `vxm\search\SearchableBehavior` behavior to a model, 
+Once you have added the `vxm\searchable\SearchableTrait` and attached the `vxm\searchable\SearchableBehavior` behavior to a model, 
 all you need to do is save a model instance and it will automatically be added to your search index. 
 If you have configured queue this operation will be performed in the background by your queue worker:
 
@@ -319,8 +319,8 @@ Sometimes you may need to only make a model searchable under certain conditions.
 You may only want to allow `published` posts to be searchable. To accomplish this, you may define a `shouldBeSearchable` method on your model:
 
 ```php
-use vxm\search\SearchableBehavior;
-use vxm\search\SearchableTrait;
+use vxm\searchable\SearchableBehavior;
+use vxm\searchable\SearchableTrait;
 
 class Article extends ActiveRecord
 {

@@ -1,15 +1,15 @@
 <?php
 /**
- * @link https://github.com/vuongxuongminh/yii2-search
+ * @link https://github.com/vuongxuongminh/yii2-searchable
  * @copyright Copyright (c) 2019 Vuong Xuong Minh
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\test\unit\search;
+namespace vxm\test\unit\searchable;
 
 use Yii;
 
-use vxm\search\CommandController;
+use vxm\searchable\CommandController;
 
 /**
  * Class CommandTest
@@ -23,7 +23,7 @@ class CommandTest extends TestCase
     public function testImport()
     {
         Model::deleteAllFromSearch();
-        /** @var \vxm\search\CommandController $controller */
+        /** @var \vxm\searchable\CommandController $controller */
         list($controller) = Yii::$app->createController('searchable');
         $controller->models = Model::class;
         $controller->runAction('import');
@@ -33,7 +33,7 @@ class CommandTest extends TestCase
     public function testDeleteAll()
     {
         Model::makeAllSearchable();
-        /** @var \vxm\search\CommandController $controller */
+        /** @var \vxm\searchable\CommandController $controller */
         list($controller) = Yii::$app->createController('searchable');
         $controller->models = Model::class;
         $controller->runAction('delete');

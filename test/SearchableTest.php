@@ -1,11 +1,11 @@
 <?php
 /**
- * @link https://github.com/vuongxuongminh/yii2-search
+ * @link https://github.com/vuongxuongminh/yii2-searchable
  * @copyright Copyright (c) 2019 Vuong Xuong Minh
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\test\unit\search;
+namespace vxm\test\unit\searchable;
 
 use Yii;
 

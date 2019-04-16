@@ -1,21 +1,21 @@
 <?php
 /**
- * @link https://github.com/vuongxuongminh/yii2-search
+ * @link https://github.com/vuongxuongminh/yii2-searchable
  * @copyright Copyright (c) 2019 Vuong Xuong Minh
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\search;
+namespace vxm\searchable;
 
 use Yii;
 
 use yii\db\ActiveQueryInterface;
 use yii\db\Exception;
 
-use vxm\search\expression\Condition;
-use vxm\search\expression\ConditionBuilder;
-use vxm\search\expression\OrderBy;
-use vxm\search\expression\OrderByBuilder;
+use vxm\searchable\expression\Condition;
+use vxm\searchable\expression\ConditionBuilder;
+use vxm\searchable\expression\OrderBy;
+use vxm\searchable\expression\OrderByBuilder;
 
 /**
  * Trait SearchableTrait support implementing full-text search for the active record classes.
@@ -71,9 +71,9 @@ trait SearchableTrait
      * Creating active query had been apply search ids condition by given query string.
      *
      * @param string $query to search data.
-     * @param string $mode using for query search, [[\vxm\search\Searchable::BOOLEAN_SEARCH]] or [[\vxm\search\Searchable::FUZZY_SEARCH]].
-     * If not set [[\vxm\search\Searchable::$defaultSearchMode]] will be use.
-     * @param array $config of [[\vxm\search\TNTSearch]].
+     * @param string $mode using for query search, [[\vxm\searchable\Searchable::BOOLEAN_SEARCH]] or [[\vxm\searchable\Searchable::FUZZY_SEARCH]].
+     * If not set [[\vxm\searchable\Searchable::$defaultSearchMode]] will be use.
+     * @param array $config of [[\vxm\searchable\TNTSearch]].
      * @return \yii\db\ActiveQuery|ActiveQueryInterface query instance.
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
@@ -113,9 +113,9 @@ trait SearchableTrait
      * Search ids by given query string.
      *
      * @param string $query to search data.
-     * @param string|null $mode using for query search, [[\vxm\search\Searchable::BOOLEAN_SEARCH]] or [[\vxm\search\Searchable::FUZZY_SEARCH]].
-     * If not set [[\vxm\search\Searchable::$defaultSearchMode]] will be use.
-     * @param array $config of [[\vxm\search\TNTSearch]].
+     * @param string|null $mode using for query search, [[\vxm\searchable\Searchable::BOOLEAN_SEARCH]] or [[\vxm\searchable\Searchable::FUZZY_SEARCH]].
+     * If not set [[\vxm\searchable\Searchable::$defaultSearchMode]] will be use.
+     * @param array $config of [[\vxm\searchable\TNTSearch]].
      * @return array search key values of indexing data search.
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException

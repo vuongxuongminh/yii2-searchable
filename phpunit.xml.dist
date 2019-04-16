@@ -6,7 +6,7 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          stopOnFailure="false"
-         printerClass="vxm\test\unit\search\ResultPrinter">
+         printerClass="vxm\test\unit\searchable\ResultPrinter">
     <testsuites>
         <testsuite name="Test Suite">
             <directory>./test</directory>

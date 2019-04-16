@@ -1,5 +1,5 @@
 {
-    "name": "vxm/yii2-search",
+    "name": "vxm/yii2-searchable",
     "description": "Simple full-text search for Yii2 active record",
     "type": "yii2-extension",
     "keywords": ["yii2","extension","full-text-search","active-record"],
@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "vxm\\search\\": "src"
+            "vxm\\searchable\\": "src"
         }
     },
     "repositories": [
@@ -31,6 +31,6 @@
         "branch-alias": {
             "dev-master": "1.0.x-dev"
         },
-        "bootstrap": "vxm\\search\\Bootstrap"
+        "bootstrap": "vxm\\searchable\\Bootstrap"
     }
 }

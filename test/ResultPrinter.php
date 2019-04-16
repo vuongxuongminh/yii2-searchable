@@ -5,7 +5,7 @@
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\test\unit\search;
+namespace vxm\test\unit\searchable;
 
 use PHPUnit\TextUI\ResultPrinter as BaseResultPrinter;
 

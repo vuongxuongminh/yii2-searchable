@@ -1,16 +1,16 @@
 <?php
 /**
- * @link https://github.com/vuongxuongminh/yii2-search
+ * @link https://github.com/vuongxuongminh/yii2-searchable
  * @copyright Copyright (c) 2019 Vuong Xuong Minh
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\search;
+namespace vxm\searchable;
 
 use yii\base\BootstrapInterface;
 use yii\console\Application as ConsoleApp;
 
-use vxm\search\console\CommandController;
+use vxm\searchable\console\CommandController;
 
 /**
  * Class Bootstrap boot searchable component and console searchable controller

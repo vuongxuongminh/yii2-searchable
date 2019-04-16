@@ -9,5 +9,5 @@ define('YII_ENV', 'test');
 require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
-Yii::setAlias('@vxm/test/unit/search', __DIR__);
-Yii::setAlias('@vxm/search', dirname(__DIR__) . '/src');
+Yii::setAlias('@vxm/test/unit/searchable', __DIR__);
+Yii::setAlias('@vxm/searchable', dirname(__DIR__) . '/src');

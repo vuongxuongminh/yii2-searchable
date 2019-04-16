@@ -5,7 +5,7 @@
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\test\unit\search;
+namespace vxm\test\unit\searchable;
 
 use Yii;
 
@@ -51,7 +51,7 @@ class TestCase extends BaseTestCase
         new $appClass(ArrayHelper::merge([
             'id' => 'test',
             'basePath' => __DIR__,
-            'bootstrap' => ['vxm\search\Bootstrap'],
+            'bootstrap' => ['vxm\searchable\Bootstrap'],
             'vendorPath' => dirname(__DIR__) . '/vendor',
             'components' => [
                 'db' => [

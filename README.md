@@ -1,10 +1,10 @@
 # Yii2 Full-Text Search
 
-[![Latest Stable Version](https://poser.pugx.org/vxm/yii2-search/v/stable)](https://packagist.org/packages/vxm/yii2-search)
-[![Total Downloads](https://poser.pugx.org/vxm/yii2-search/downloads)](https://packagist.org/packages/vxm/yii2-search)
-[![Build Status](https://travis-ci.org/vuongxuongminh/yii2-search.svg?branch=master)](https://travis-ci.org/vuongxuongminh/yii2-search)
-[![Code Coverage](https://scrutinizer-ci.com/g/vuongxuongminh/yii2-search/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/vuongxuongminh/yii2-search/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vuongxuongminh/yii2-search/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/vuongxuongminh/yii2-search/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/vxm/yii2-searchable/v/stable)](https://packagist.org/packages/vxm/yii2-searchable)
+[![Total Downloads](https://poser.pugx.org/vxm/yii2-searchable/downloads)](https://packagist.org/packages/vxm/yii2-searchable)
+[![Build Status](https://travis-ci.org/vuongxuongminh/yii2-searchable.svg?branch=master)](https://travis-ci.org/vuongxuongminh/yii2-searchable)
+[![Code Coverage](https://scrutinizer-ci.com/g/vuongxuongminh/yii2-searchable/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/vuongxuongminh/yii2-searchable/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vuongxuongminh/yii2-searchable/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/vuongxuongminh/yii2-searchable/?branch=master)
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
 
 ## About it
@@ -21,7 +21,7 @@ An extension provide simple full-text search with ideas get from [laravel/scout]
 Require Yii2 Search using [Composer](https://getcomposer.org):
 
 ```bash
-composer require vxm/yii2-search
+composer require vxm/yii2-searchable
 ```
 
 Finally, add the `\vxm\searchable\SearchableTrait` trait and attach `vxm\searchable\SearchableBehavior` to the active record you would like to make searchable. This will help sync the model with index data
@@ -369,6 +369,8 @@ $models = \app\models\Post::find()->where(['author_id' => 1])->all();
 
 ## Searching
 
+### Simple
+
 You may begin searching a model using the `search` method. The search method accepts a single string that will be used to search your models. 
 This method return an `ActiveQuery` you can add more condition or relationship like an origin query. 
 
@@ -382,6 +384,16 @@ $posts = \app\models\Post::search('vxm')->andWhere(['author_id' => 1])->all();
 // not use
 $posts = \app\models\Post::search('vxm')->where(['author_id' => 1])->all();
 ```
+
+### Advanced
+
+You can joining relations on search query with relations support `searchable`:
+
+```php
+$posts = \app\models\Post::search('vxm')->joinWith('category')->andWhere(Category::search('vxm category'));
+```
+
+### Search mode
 
 You can choice a `boolean` or `fuzzy` search mode:
 

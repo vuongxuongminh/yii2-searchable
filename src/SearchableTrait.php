@@ -40,12 +40,6 @@ trait SearchableTrait
 
     /**
      * @inheritDoc
-     * @return \yii\db\TableSchema
-     */
-    abstract public static function getTableSchema();
-
-    /**
-     * @inheritDoc
      * @return mixed
      */
     abstract public static function primaryKey();

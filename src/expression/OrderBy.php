@@ -28,10 +28,11 @@ class OrderBy extends Expression
         $position = 1;
         $cases = ['CASE'];
         $params = [];
+        $searchableKey = $this->searchableKey();
 
         foreach ($this->ids as $id) {
             $paramName = ":sob{$position}";
-            $cases[] = 'WHEN ' . $this->searchableKey() . " = {$paramName} THEN {$position}";
+            $cases[] = "WHEN {$searchableKey} = {$paramName} THEN {$position}";
             $params[$paramName] = $id;
             $position++;
         }

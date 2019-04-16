@@ -107,7 +107,7 @@ class Searchable extends Component
      * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
      * @throws \yii\base\InvalidConfigException
      */
-    public function search(string $modelClass, string $query, ?string $mode = null, array $config = [], int $limit = 100)
+    public function search(string $modelClass, string $query, ?string $mode = null, array $config = [], int $limit = 100): array
     {
         /** @var \yii\db\ActiveRecord $modelClass */
         $this->initIndex($modelClass, $config);

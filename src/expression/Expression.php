@@ -9,7 +9,6 @@ namespace vxm\search\expression;
 
 use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
-use yii\db\conditions\InCondition;
 use yii\db\ExpressionInterface;
 
 /**

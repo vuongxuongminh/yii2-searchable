@@ -12,7 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\db\ExpressionInterface;
 
 /**
- * Class Expression make a searchable expression.
+ * Class Expression make a searchable expression to query.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
@@ -47,9 +47,9 @@ abstract class Expression extends BaseObject implements ExpressionInterface
     }
 
     /**
-     * Creating an specific expression to apply to condition, order by.
+     * Creating an specific expression to apply to query.
      *
-     * @return ExpressionInterface apply to `where` conditions.
+     * @return ExpressionInterface apply to query.
      */
     abstract public function getExpression(): ExpressionInterface;
 

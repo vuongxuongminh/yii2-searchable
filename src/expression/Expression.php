@@ -5,21 +5,20 @@
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\search;
+namespace vxm\search\expression;
 
 use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
 use yii\db\conditions\InCondition;
 use yii\db\ExpressionInterface;
-use yii\db\conditions\ConditionInterface;
 
 /**
- * Class SearchableExpression make a searchable condition for ensure an alias of table name.
+ * Class Expression make a searchable expression.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
  */
-class SearchableExpression extends BaseObject implements ExpressionInterface
+abstract class Expression extends BaseObject implements ExpressionInterface
 {
     /**
      * @var \yii\db\ActiveQuery
@@ -49,19 +48,24 @@ class SearchableExpression extends BaseObject implements ExpressionInterface
     }
 
     /**
-     * Creating condition by search result ids.
-     * It making diff because it call on `prepare` state for ensure an alias table name.
+     * Creating an specific expression to apply to condition, order by.
      *
-     * @return ConditionInterface apply to `where` conditions.
+     * @return ExpressionInterface apply to `where` conditions.
      */
-    public function getCondition(): ConditionInterface
+    abstract public function getExpression(): ExpressionInterface;
+
+    /**
+     * Get pretty searchable key via model with an alias of the table.
+     *
+     * @return string the searchable key name
+     */
+    protected function searchableKey(): string
     {
         /** @var \yii\db\ActiveRecord $modelClass */
         $modelClass = $this->query->modelClass;
         list(, $alias) = $this->getTableNameAndAlias();
-        $key = '{{' . $alias . '}}.[[' . $modelClass::searchableKey() . ']]';
 
-        return new InCondition($key, 'IN', $this->ids);
+        return '{{' . $alias . '}}.[[' . $modelClass::searchableKey() . ']]';
     }
 
     /**

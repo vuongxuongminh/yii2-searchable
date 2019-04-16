@@ -10,10 +10,12 @@ namespace vxm\search;
 use Yii;
 
 use yii\base\Component;
-use yii\base\InvalidCallException;
 use yii\db\Connection;
 use yii\di\Instance;
 use yii\queue\Queue;
+
+use vxm\search\queue\DeleteSearchable;
+use vxm\search\queue\MakeSearchable;
 
 /**
  * Class TNTSearch support full-text search via tnt search.
@@ -141,33 +143,6 @@ class Searchable extends Component
     }
 
     /**
-     * Dispatch the job to make the given models searchable.
-     *
-     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models dispatch to queue job.
-     * @param array $config of [[\vxm\search\TNTSearch]].
-     * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function queueMakeSearchable($models, array $config = []): void
-    {
-        $models = is_array($models) ? $models : [$models];
-
-        if (empty($models)) {
-
-            return;
-        }
-
-        if ($this->queue === null) {
-
-            $this->upsert($models, $config);
-        } else {
-
-            $job = new MakeSearchableJob($models);
-            $this->queue->push($job);
-        }
-    }
-
-    /**
      * Dispatch the job to make the given models unsearchable.
      *
      * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models dispatch to queue.
@@ -189,7 +164,34 @@ class Searchable extends Component
             $this->delete($models, $config);
         } else {
 
-            $job = new DeleteSearchableJob($models);
+            $job = new DeleteSearchable($models);
+            $this->queue->push($job);
+        }
+    }
+
+    /**
+     * Dispatch the job to make the given models searchable.
+     *
+     * @param \yii\db\ActiveRecord|\yii\db\ActiveRecord[]|static|static[] $models dispatch to queue job.
+     * @param array $config of [[\vxm\search\TNTSearch]].
+     * @throws \TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function queueMakeSearchable($models, array $config = []): void
+    {
+        $models = is_array($models) ? $models : [$models];
+
+        if (empty($models)) {
+
+            return;
+        }
+
+        if ($this->queue === null) {
+
+            $this->upsert($models, $config);
+        } else {
+
+            $job = new MakeSearchable($models);
             $this->queue->push($job);
         }
     }

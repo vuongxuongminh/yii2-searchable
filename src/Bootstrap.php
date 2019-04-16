@@ -10,6 +10,8 @@ namespace vxm\search;
 use yii\base\BootstrapInterface;
 use yii\console\Application as ConsoleApp;
 
+use vxm\search\console\CommandController;
+
 /**
  * Class Bootstrap boot searchable component and console searchable controller
  *

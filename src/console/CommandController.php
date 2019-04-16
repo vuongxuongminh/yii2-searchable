@@ -5,7 +5,7 @@
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\search;
+namespace vxm\search\console;
 
 use yii\base\InvalidArgumentException;
 use yii\console\Controller;

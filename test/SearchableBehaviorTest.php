@@ -9,6 +9,8 @@ namespace vxm\test\unit\search;
 
 use Yii;
 
+use yii\helpers\ArrayHelper;
+
 /**
  * Class SearchableBehaviorTest
  *
@@ -82,5 +84,20 @@ class SearchableBehaviorTest extends TestCase
             $modelSearch = Model::searchIds('testDeleteUnSync title');
             $this->assertNotEmpty($modelSearch);
         });
+    }
+
+    public function testOrderBy()
+    {
+        Model::makeAllSearchable();
+        $ids = Model::searchIds('Romeo');
+        $models = Model::search('Romeo')->all();
+        $modelIds = ArrayHelper::getColumn($models, 'id');
+
+        $this->assertEquals($ids, $modelIds);
+
+        $models = Model::search('Romeo')->addOrderBy(['article' => SORT_DESC])->all();
+        $modelIds = ArrayHelper::getColumn($models, 'id');
+
+        $this->assertNotEquals($ids, $modelIds);
     }
 }

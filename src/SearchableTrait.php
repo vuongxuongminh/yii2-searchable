@@ -12,6 +12,11 @@ use Yii;
 use yii\db\ActiveQueryInterface;
 use yii\db\Exception;
 
+use vxm\search\expression\Condition;
+use vxm\search\expression\ConditionBuilder;
+use vxm\search\expression\OrderBy;
+use vxm\search\expression\OrderByBuilder;
+
 /**
  * Trait SearchableTrait support implementing full-text search for the active record classes.
  *
@@ -87,14 +92,18 @@ trait SearchableTrait
             $db = static::getDb();
             $db->setQueryBuilder([
                 'expressionBuilders' => [
-                    SearchableExpression::class => SearchableExpressionBuilder::class
+                    Condition::class => ConditionBuilder::class,
+                    OrderBy::class => OrderByBuilder::class
                 ]
             ]);
-            $searchableExpression = new SearchableExpression([
+            $expressionConfig = [
                 'query' => $aq,
                 'ids' => $ids
-            ]);
-            $aq->andWhere($searchableExpression);
+            ];
+            $condition = new Condition($expressionConfig);
+            $orderBy = new OrderBy($expressionConfig);
+            $aq->andWhere($condition);
+            $aq->addOrderBy($orderBy);
         }
 
         return $aq;

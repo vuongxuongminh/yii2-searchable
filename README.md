@@ -69,6 +69,27 @@ or an array config of it.
 
 ## Configuration
 
+### Configuring Component
+
+By default a component will be add to your application components via bootstrapping with id `searchable`. If you need to config it you can manual config in your application config file:
+
+```php
+'components' => [
+    'searchable' => [
+        'class' => 'vxm\search\Searchable',
+        'storagePath' => '@runtime/vxm/search',
+        'queue' => null, // an optional not required
+        'defaultSearchMode' => \vxm\search\Searchable::FUZZY_SEARCH,
+        'asYouType' => false,
+        'fuzziness' => false,
+        'fuzzyPrefixLength' => 2,
+        'fuzzyMaxExpansions' => 50,
+        'fuzzyMaxExpansions' => 50,
+        'fuzzyDistance' => 50
+    ]
+]
+```
+
 ### Configuring Model Index
 
 Each Active Record model is synced with a given search `index`, which contains all of the searchable records for that model. 

@@ -5,15 +5,15 @@
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\search;
+namespace vxm\search\queue;
 
 /**
- * Class DeleteSearchableJob support delete searchable index data via worker.
+ * Class DeleteSearchable support delete searchable index data via worker.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
  */
-class DeleteSearchableJob extends QueueJob
+class DeleteSearchable extends Job
 {
 
     /**

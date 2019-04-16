@@ -5,15 +5,15 @@
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\search;
+namespace vxm\search\queue;
 
 /**
- * Class MakeSearchableJob support make searchable index data via worker.
+ * Class MakeSearchable support make searchable index data via worker.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
  */
-class MakeSearchableJob extends QueueJob
+class MakeSearchable extends Job
 {
 
     /**

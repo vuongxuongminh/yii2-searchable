@@ -5,17 +5,17 @@
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\search;
+namespace vxm\search\queue;
 
 use yii\queue\JobInterface;
 
 /**
- * Class QueueJob providing base methods need for index data jobs.
+ * Class Job providing base methods need for index data jobs.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
  */
-abstract class QueueJob implements JobInterface
+abstract class Job implements JobInterface
 {
 
     /**

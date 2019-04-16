@@ -5,30 +5,37 @@
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace vxm\search;
+namespace vxm\search\expression;
 
 use yii\db\ExpressionBuilderInterface;
 use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * Class SearchableConditionBuilder for build the [[SearchableCondition]].
+ * Class OrderByBuilder for build the [[OrderBy]].
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0
  */
-class SearchableExpressionBuilder implements ExpressionBuilderInterface
+class OrderByBuilder implements ExpressionBuilderInterface
 {
+
     use ExpressionBuilderTrait;
 
     /**
-     * @param ExpressionInterface|SearchableExpression $expression
+     * @param ExpressionInterface|OrderBy $expression
      * @inheritDoc
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $condition = $expression->getCondition();
+        $orderBy = $expression->query->orderBy;
 
-        return $this->queryBuilder->buildCondition($condition, $params);
+        if ($orderBy[0] === $expression && count($orderBy) === 1) {
+
+            return $this->queryBuilder->buildExpression($expression->getExpression());
+        } else { // user choice
+
+            return '(SELECT NULL)';
+        }
     }
 }

@@ -241,7 +241,7 @@ $post->save();
 
 ### Adding Via Active Query Result
 
-If you would like to add a Active Query result to your search index, you may use `makeSearchable` method onto an Active Query result. 
+If you would like to add a Active Query results to your search index, you may use `makeSearchable` method onto an Active Query result. 
 The `makeSearchable` method will chunk the results of the query and add the records to your search index. 
 Again, if you have configured queue, all of the chunks will be added in the background by your queue workers:
 
@@ -278,9 +278,9 @@ $models = \app\models\Post::find()->where(['author_id' => 1])->all();
 \app\models\Post::makeSearchable($models);
 ```
 
-### Removing Records
+### Deleting Records
 
-To remove a record from your index, delete the model from the database:
+To delete a record from your index, delete the model from the database:
 
 ```php
 $post = \app\models\Post::findOne(1);

@@ -18,7 +18,7 @@ An extension provide simple full-text search with ideas get from [laravel/scout]
 
 ## Installation
 
-Require Yii2 Search using [Composer](https://getcomposer.org):
+Require Yii2 Searchable using [Composer](https://getcomposer.org):
 
 ```bash
 composer require vxm/yii2-searchable

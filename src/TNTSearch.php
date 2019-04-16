@@ -14,7 +14,7 @@ use yii\base\Configurable;
 use TeamTNT\TNTSearch\TNTSearch as BaseTNTSearch;
 
 /**
- * Class TNTSearch base on `\TeamTNT\TNTSearch\TNTSearch` implementing yii configurable.
+ * Class TNTSearch base on [[\TeamTNT\TNTSearch\TNTSearch]] implementing yii configurable.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0

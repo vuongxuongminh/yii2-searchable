@@ -21,7 +21,7 @@ class OrderBy extends Expression
 
     /**
      * @inheritDoc
-     * @return ExpressionInterface|
+     * @return ExpressionInterface|OrderBy
      */
     public function getExpression(): ExpressionInterface
     {
@@ -37,7 +37,7 @@ class OrderBy extends Expression
             $position++;
         }
 
-        $cases[] = 'ELSE ' . $position;
+        $cases[] = "ELSE {$position}";
         $cases[] = 'END ASC';
 
         return new DbExpression(implode(' ', $cases), $params);

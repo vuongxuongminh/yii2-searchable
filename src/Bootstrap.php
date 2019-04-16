@@ -13,7 +13,7 @@ use yii\console\Application as ConsoleApp;
 use vxm\searchable\console\CommandController;
 
 /**
- * Class Bootstrap boot searchable component and console searchable controller
+ * Class Bootstrap boot searchable component and console searchable controller.
  *
  * @author Vuong Minh <vuongxuongminh@gmail.com>
  * @since 1.0.0

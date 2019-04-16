@@ -23,7 +23,7 @@ class ConditionBuilder implements ExpressionBuilderInterface
     use ExpressionBuilderTrait;
 
     /**
-     * @param ExpressionInterface|ConditionExpression $expression
+     * @param ExpressionInterface|Condition $expression
      * @inheritDoc
      */
     public function build(ExpressionInterface $expression, array &$params = [])

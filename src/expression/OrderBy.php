@@ -25,9 +25,7 @@ class OrderBy extends Expression
      */
 	public function getExpression(): ExpressionInterface {
 		$position = 1;
-		$cases = [ 
-				'CASE'
-		];
+		$cases = ['CASE'];
 		$searchableKey = $this->searchableKey ();
 
 		foreach ( $this->ids as $id ) {

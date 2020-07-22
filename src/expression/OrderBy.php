@@ -34,7 +34,7 @@ class OrderBy extends Expression
 		}
 
 		$cases [] = "ELSE {$position}";
-		$cases [] = 'END ASC';
+		$cases [] = 'END ASC'; 
 
 		return new DbExpression ( implode ( ' ', $cases ) );
 	}
